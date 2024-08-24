@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import { Button, Form, Image, InputGroup } from "react-bootstrap";
+=======
+>>>>>>> main
 
 const HomePage = () => {
   const [input, setInput] = useState<string>("");
