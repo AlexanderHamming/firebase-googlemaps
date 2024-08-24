@@ -11,7 +11,7 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
   params: {
-    api_key: googleMapsApiKey,
+    key: googleMapsApiKey,
   },
 });
 
@@ -24,3 +24,27 @@ const get = async <T>(endpoint: string, params = {}): Promise<T> => {
       throw error; 
     }
   };
+
+  const post = async <T>(endpoint: string, data = {}): Promise<T> => {
+    try {
+      const res = await instance.post(endpoint, data);
+      return res.data;
+    } catch (error) {
+      console.error(`error making get request to ${endpoint}:`, error);
+      throw error; 
+    }
+  };
+
+
+// adress till kordinator
+  export const getGeocodeAdress = async (adress: string) => {
+    return get("/geocode/json", { adress })
+  }
+
+  export const getUserLocation = async () {
+
+  }
+
+  export const getDirections = async () {
+
+  }
