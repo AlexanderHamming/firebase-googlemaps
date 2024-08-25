@@ -1,11 +1,12 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import "../assets/NavBar.scss"
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import "../assets/NavBar.scss";
+import useAuth from '../hooks/useAuth';
 
-
-function NavBar() {
-
+function NavBarAdmin() {
+    const { currentUser } = useAuth()
     return (
         <Navbar expand="md" className="bg-body-tertiary" id="custom-navbar" style={{ backgroundColor: '#7ae835' }}>
             <Container>
@@ -15,6 +16,7 @@ function NavBar() {
                     <Nav className="me-auto">
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/suggestions">Suggest a new restaurant for us!</Nav.Link>
+                        <Nav.Link href="/logout">Logout?</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
@@ -22,4 +24,4 @@ function NavBar() {
     );
 }
 
-export default NavBar;
+export default NavBarAdmin;
