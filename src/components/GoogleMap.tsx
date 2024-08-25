@@ -2,7 +2,7 @@ import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/ap
 
 const GoogleMapp = () => {
   const containerStyle = {
-    width: "500px",
+    width: "400px",
     height: "400px",
   };
 
@@ -20,7 +20,7 @@ const GoogleMapp = () => {
   return (
     <LoadScript googleMapsApiKey={apiKey}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
-      
+
       </GoogleMap>
     </LoadScript>
   );
