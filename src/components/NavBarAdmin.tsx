@@ -1,14 +1,13 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import { NavDropdown } from 'react-bootstrap';
 import "../assets/NavBar.scss";
-import useAuth from '../hooks/useAuth';
 
 function NavBarAdmin() {
-    const { currentUser } = useAuth()
+
     return (
-        <Navbar expand="md" className="bg-body-tertiary" id="custom-navbar" style={{ backgroundColor: '#7ae835' }}>
+        <Navbar expand="md" className="bg-body-tertiary" id="custom-navbar">
             <Container>
                 <Navbar.Brand href="/" id="navHead">Pizza Hunters AB 🍕</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -16,7 +15,11 @@ function NavBarAdmin() {
                     <Nav className="me-auto">
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/suggestions">Suggest a new restaurant for us!</Nav.Link>
-                        <Nav.Link href="/logout">Logout?</Nav.Link>
+                        <NavDropdown title="Admin Paths" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="/edit">Edit Page</NavDropdown.Item>
+                            <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                            <NavDropdown.Item href="/logout">Sign out?</NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

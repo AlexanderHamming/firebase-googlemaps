@@ -24,8 +24,7 @@ function App() {
   }, [currentUser])
   return (
     <Container>
-      {currentUser !== null && <NavBarAdmin />}
-      {currentUser !== null && <p>Logged in as: {currentUser.email}</p>}
+      {currentUser !== null && <><NavBarAdmin /> <p>Signed in as: {currentUser.email}</p></>}
       {currentUser === null && <NavBar />}
       <Routes>
         {/* Public routes */}
