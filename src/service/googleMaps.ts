@@ -49,6 +49,6 @@ export const getUserLocation = async (): Promise<UserLocationType> => {
   };
 
 // kordinator till adress
-export const reverseGeocode = async (lat: number, lng: number): Promise<ReverseGeocodeResultType> => {
+export const getReverseGeocode = async (lat: number, lng: number): Promise<ReverseGeocodeResultType> => {
     return get<ReverseGeocodeResultType>("/geocode/json", { latlng: `${lat},${lng}` });
   };
