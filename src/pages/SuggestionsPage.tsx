@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Select, { MultiValue, ActionMeta } from 'react-select';
 import { Form, Button } from 'react-bootstrap';
+import { Restaurant } from '../types/User.types';
 
 // Define types
 interface OptionType {
@@ -8,19 +9,6 @@ interface OptionType {
     label: string;
 }
 
-interface Restaurant {
-    address: string;
-    category: string[];
-    city: string;
-    description?: string;
-    email?: string;
-    facebook?: string;
-    instagram?: string;
-    name: string;
-    offer: string[];
-    phone?: string;
-    website?: string;
-}
 
 const RestaurantForm: React.FC = () => {
     const [restaurant, setRestaurant] = useState<Restaurant>({
