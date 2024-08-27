@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import Select, { MultiValue, ActionMeta } from 'react-select';
+import Select, { MultiValue } from 'react-select';
 import { Form, Button } from 'react-bootstrap';
 import { Restaurant } from '../types/User.types';
+import { addDoc, collection } from 'firebase/firestore';
+import { firedb } from '../service/firebase';
 
-// Define types
 interface OptionType {
     value: string;
     label: string;
@@ -50,8 +51,7 @@ const RestaurantForm: React.FC = () => {
     };
 
     const handleCategoryChange = (
-        newValue: MultiValue<OptionType>,
-        actionMeta: ActionMeta<OptionType>
+        newValue: MultiValue<OptionType>
     ) => {
         setRestaurant(prevState => ({
             ...prevState,
@@ -60,8 +60,7 @@ const RestaurantForm: React.FC = () => {
     };
 
     const handleOfferChange = (
-        newValue: MultiValue<OptionType>,
-        actionMeta: ActionMeta<OptionType>
+        newValue: MultiValue<OptionType>
     ) => {
         setRestaurant(prevState => ({
             ...prevState,
@@ -69,9 +68,20 @@ const RestaurantForm: React.FC = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(restaurant);
+
+        try {
+            await addDoc(collection(firedb, 'formSuggestions'), {
+                ...restaurant,
+                createdAt: new Date()
+            });
+            alert('Form submitted successfully!');
+        } catch (error) {
+            console.error("Error submitting form: ", error);
+            alert('Failed to submit form.');
+        }
     };
 
     return (
