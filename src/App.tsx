@@ -13,6 +13,8 @@ import { Container } from "react-bootstrap";
 import SuggestionsPage from "./pages/SuggestionsPage";
 import useAuth from "./hooks/useAuth";
 import { User } from "firebase/auth";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
   }, [currentUser])
   return (
     <Container>
+      <ToastContainer />
+
       {currentUser !== null && <><NavBarAdmin /> <p>Signed in as: {currentUser.email}</p></>}
       {currentUser === null && <NavBar />}
       <Routes>
