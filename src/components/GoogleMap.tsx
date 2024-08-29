@@ -1,26 +1,33 @@
-import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import MapMarker from "./MapMarker";
 
-const GoogleMapp = () => {
+interface GoogleMappProps {
+  selectedAddress: string;
+  coordinates: { lat: number; lng: number } | null;
+  zoom: number;
+}
+
+const GoogleMapp: React.FC<GoogleMappProps> = ({ selectedAddress, coordinates, zoom }) => {
   const containerStyle = {
     width: "400px",
     height: "400px",
   };
 
-  const center = {
-    lat: -3.745,
-    lng: -38.523,
-  };
-
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   if (!apiKey) {
-    console.log("no api key")
+    console.log("No API key");
+    return null;
+  }
+
+  if (!coordinates) {
+    return <p>No valid coordinates found!</p>;
   }
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
-
+      <GoogleMap mapContainerStyle={containerStyle} center={coordinates} zoom={zoom}>
+        <MapMarker coordinates={coordinates} selectedAddress={selectedAddress} />
       </GoogleMap>
     </LoadScript>
   );
