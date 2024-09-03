@@ -15,6 +15,7 @@ import useAuth from "./hooks/useAuth";
 import { User } from "firebase/auth";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import AdminAdvicePage from "./pages/AdminAdvicePage";
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/edit" element={<EditPage />} />
+          <Route path="/advice" element={<AdminAdvicePage />} />
         </Route>
       </Routes>
     </Container>
