@@ -9,9 +9,18 @@ const HomePage = () => {
   const [selectedAddress, setSelectedAddress] = useState("Malmö");
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [zoom, setZoom] = useState<number>(11);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   const { data: geocodeData } = useGeocode(selectedAddress);
   const { location, error: geolocationError } = useBrowserGeolocation();
+
+  useEffect(() => {
+    if (location) {
+      setUserLocation(location);
+    } else if (geolocationError) {
+      console.error("Error fetching user location:", geolocationError);
+    }
+  }, [location, geolocationError]);
 
   useEffect(() => {
     if (geocodeData && geocodeData.results && geocodeData.results[0]) {
@@ -22,7 +31,7 @@ const HomePage = () => {
       if (locationType === "ROOFTOP") {
         setZoom(15);
       } else {
-        setZoom(11);
+        setZoom(12.5);
       }
     }
   }, [geocodeData]);
@@ -32,16 +41,15 @@ const HomePage = () => {
       setCoordinates(location);
       setSelectedAddress("Your location");
       setZoom(15);
-    } else if (geolocationError) {
-      console.error("Error fetching user location:", geolocationError);
     }
   };
+
   return (
     
       <Container id="searchMapContainer">
         <SearchBar onSearch={setSelectedAddress} onLocateUser={handleLocateUser} />
         {/* <Image src="https://placehold.co/400" /> */}
-        <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} />
+        <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} userLocation={userLocation}/>
         //Add component for rendering lists
       </Container>
     
