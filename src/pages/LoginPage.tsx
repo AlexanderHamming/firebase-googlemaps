@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { FirebaseError } from "firebase/app";
 import useAuth from "../hooks/useAuth";
 import { LoginCredentials } from "../types/User.types";
+import "../assets/LoginPage.scss";
 
 const LoginPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,31 +32,37 @@ const LoginPage = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onLogin)}>
-    <Form.Group controlId="email" className="mb-3">
-      <Form.Label>Email</Form.Label>
-      <Form.Control
-        placeholder="Enter your email here"
-        type="email"
-        {...register("email", { required: "Email is required" })}
-      />
-      {errors.email && <p className="invalid">{errors.email.message}</p>}
-    </Form.Group>
-    <Form.Group controlId="password" className="mb-3">
-      <Form.Label>Password</Form.Label>
-      <Form.Control
-        type="password"
-        {...register("password", {
-          required: "Password is required",
-          minLength: { value: 6, message: "Password must be at least 6 characters" }
-        })}
-      />
-      {errors.password && <p className="invalid">{errors.password.message}</p>}
-    </Form.Group>
-    <Button disabled={isSubmitting} type="submit">
-      {isSubmitting ? "Logging in..." : "Log In"}
-    </Button>
-  </Form>
+    <div className="login-container">
+      <Form onSubmit={handleSubmit(onLogin)} className="login-form">
+        <Form.Group controlId="email" className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            placeholder="Enter your email here"
+            type="email"
+            {...register("email", { required: "Email is required" })}
+          />
+          {errors.email && <p className="invalid">{errors.email.message}</p>}
+        </Form.Group>
+        <Form.Group controlId="password" className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            {...register("password", {
+              required: "Password is required",
+              minLength: { value: 6, message: "Password must be at least 6 characters" }
+            })}
+          />
+          {errors.password && <p className="invalid">{errors.password.message}</p>}
+        </Form.Group>
+        <Button 
+          disabled={isSubmitting} 
+          type="submit" 
+          className="login-button"
+        >
+          {isSubmitting ? "Logging in..." : "Log In"}
+        </Button>
+      </Form>
+    </div>
   );
 };
 
