@@ -33,12 +33,21 @@ const RestaurantForm: React.FC = () => {
     useEffect(() => {
         if (geocodeData && geocodeData.results && geocodeData.results[0]) {
           const location = geocodeData.results[0].geometry.location;
-          setRestaurant(prevState => ({
-            ...prevState,
-            location: { lat: location.lat, lng: location.lng }
-          }));
+          setRestaurant(prevState => {
+            if (
+              prevState.location.lat !== location.lat ||
+              prevState.location.lng !== location.lng
+            ) {
+              return {
+                ...prevState,
+                location: { lat: location.lat, lng: location.lng }
+              };
+            }
+            return prevState;
+          });
         }
       }, [geocodeData]);
+      
 
     const categoryOptions: OptionType[] = [
         { value: 'Pizza napoletana', label: 'Pizza napoletana' },
