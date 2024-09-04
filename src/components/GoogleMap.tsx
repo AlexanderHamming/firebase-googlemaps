@@ -5,7 +5,7 @@ import {
   InfoWindow,
 } from "@vis.gl/react-google-maps";
 import { useState } from "react";
-import { Spinner } from "react-bootstrap";
+
 
 interface GoogleMappProps {
   selectedAddress: string;
@@ -14,12 +14,7 @@ interface GoogleMappProps {
   userLocation: { lat: number; lng: number } | null;
 }
 
-const GoogleMapp: React.FC<GoogleMappProps> = ({
-  coordinates,
-  zoom,
-  userLocation,
-  selectedAddress,
-}) => {
+const GoogleMapp: React.FC<GoogleMappProps> = ({ coordinates, zoom, userLocation, selectedAddress }) => {
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
 
   const handleMarkerClick = () => {
@@ -27,18 +22,16 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
   };
 
   if (!coordinates) {
-    return (
-      <div className="text-center my-4">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </div>
-    );
+    return <p>No valid coordinates found!</p>;
   }
-
+  
   const directionsLink = userLocation
-    ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${coordinates.lat},${coordinates.lng}`
-    : `https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}`;
+  ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${coordinates.lat},${coordinates.lng}`
+  : `https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}`;
+
+
+
+ 
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const mapID = import.meta.env.VITE_GOOGLE_MAP_ID;
@@ -48,6 +41,7 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
     return null;
   }
 
+
   return (
     <APIProvider apiKey={apiKey}>
       <Map
@@ -55,6 +49,7 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
         center={coordinates}
         zoom={zoom}
         style={{ width: "100%", height: "70vh" }}
+        
       >
         <AdvancedMarker position={coordinates} onClick={handleMarkerClick} />
         {isInfoWindowOpen && (
@@ -65,11 +60,7 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
               <p>Lat: {coordinates.lat}</p>
               <p>Lng: {coordinates.lng}</p>
               {userLocation && (
-                <a
-                  href={directionsLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={directionsLink} target="_blank" rel="noopener noreferrer">
                   See directions
                 </a>
               )}
@@ -80,5 +71,6 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
     </APIProvider>
   );
 };
+
 
 export default GoogleMapp;

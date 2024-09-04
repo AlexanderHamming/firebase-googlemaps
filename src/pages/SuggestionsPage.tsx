@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select, { MultiValue } from 'react-select';
 import { Form, Button } from 'react-bootstrap';
 import { Restaurant } from '../types/User.types';
 import { addDoc, collection } from 'firebase/firestore';
 import { firedb } from '../service/firebase';
+import { useGeocode } from "../hooks/googleMapsHooks/useGeocode"
 
 interface OptionType {
     value: string;
@@ -24,7 +25,20 @@ const RestaurantForm: React.FC = () => {
         offer: [],
         phone: '',
         website: '',
+        location: { lat: 0, lng: 0 }, 
     });
+
+    const { data: geocodeData } = useGeocode(restaurant.address, restaurant.city);
+
+    useEffect(() => {
+        if (geocodeData && geocodeData.results && geocodeData.results[0]) {
+          const location = geocodeData.results[0].geometry.location;
+          setRestaurant(prevState => ({
+            ...prevState,
+            location: { lat: location.lat, lng: location.lng }
+          }));
+        }
+      }, [geocodeData]);
 
     const categoryOptions: OptionType[] = [
         { value: 'Pizza napoletana', label: 'Pizza napoletana' },
