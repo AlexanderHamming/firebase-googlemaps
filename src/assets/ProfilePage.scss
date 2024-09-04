@@ -1,3 +1,12 @@
+form {
+  padding-block: 5rem;
+}
+
+input {
+  width: 65%;
+  max-width: 400px;
+}
+
 #profilePageButton {
   color: white;
 }
@@ -8,10 +17,6 @@
   background-color: white;
   border: 0.3rem solid white;
   cursor: pointer;
-}
-
-form {
-  padding-block: 5rem;
 }
 
 #fileInput {
