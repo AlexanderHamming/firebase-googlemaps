@@ -5,9 +5,7 @@ import GoogleMapp from "../components/GoogleMap";
 import useGeocode from "../hooks/googleMapsHooks/useGeocode";
 import { useBrowserGeolocation } from "../hooks/googleMapsHooks/useBrowserGeoLocation";
 import RestaurantList from '../components/RestaurantList';
-import { CollectionReference, collection } from 'firebase/firestore';
-import { firedb } from "../service/firebase";
-import { Restaurant } from "../types/User.types";
+import { restaurantsCollection } from "../service/firebase";
 import useGetCollection from "../hooks/useGetCollection";
 
 const HomePage = () => {
@@ -19,8 +17,9 @@ const HomePage = () => {
   const { data: geocodeData } = useGeocode(selectedAddress);
   const { location, error: geolocationError } = useBrowserGeolocation();
 
-  const colRef = collection(firedb, "restaurants") as CollectionReference<Restaurant>;
-  const { data: restaurants, loading, error } = useGetCollection(colRef);
+  // How to pass and update constraints
+  // where("city", "==", selectedAddress);
+  const { data: restaurants, loading, error } = useGetCollection(restaurantsCollection);
 
   useEffect(() => {
     if (location) {
@@ -53,13 +52,11 @@ const HomePage = () => {
   };
 
   return (
-    
-      <Container id="searchMapContainer">
-        <SearchBar onSearch={setSelectedAddress} onLocateUser={handleLocateUser} />
-        {/* <Image src="https://placehold.co/400" /> */}
-        <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} userLocation={userLocation}/>
-        <RestaurantList restaurants={restaurants} loading={loading} error={error} />
-      </Container>
+    <Container id="searchMapContainer">
+      <SearchBar onSearch={setSelectedAddress} onLocateUser={handleLocateUser} />
+      <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} userLocation={userLocation}/>
+      <RestaurantList restaurants={restaurants} loading={loading} error={error} />
+    </Container>
   );
 };
 

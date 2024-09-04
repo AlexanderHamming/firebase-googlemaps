@@ -1,38 +1,49 @@
-import { CollectionReference, onSnapshot, query, QueryConstraint } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { Restaurant } from "../types/User.types";
+import { CollectionReference, getDocs, query, QueryConstraint } from "firebase/firestore";
+import { useCallback, useEffect, useState } from "react";
 
-const useGetCollection = (
-  colRef: CollectionReference<Restaurant>,
+const useGetCollection = <T>(
+  colRef: CollectionReference<T>,
   ...queryConstraints: QueryConstraint[]
 ) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<(Restaurant & { id: string })[] | null>(null);
+  const [data, setData] = useState<(T & { id: string })[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const queryRef = query(colRef, ...queryConstraints);
+  const getData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-    const unsubscribe = onSnapshot(
-      queryRef,
-      (snapshot) => {
-        const docsData = snapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setData(docsData as (Restaurant & { id: string })[]);
-        setLoading(false);
-      },
-      (err) => {
+    try {
+      const queryRef = query(colRef, ...queryConstraints);
+      const snapshot = await getDocs(queryRef);
+
+      const data = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      })) as (T & { id: string })[];
+
+      setData(data);
+    } catch (err) {
+      if (err instanceof Error) {
         setError(err.message);
-        setLoading(false);
+      } else {
+        setError('An unknown error occurred');
       }
-    );
+    } finally {
+      setLoading(false);
+    }
+  }, [colRef]);
 
-    return unsubscribe;
-  }, [colRef, ...queryConstraints]);
+  useEffect(() => {
+    getData();
+  }, [getData]);
 
-  return { data, loading, error };
+  return {
+    data,
+    getData,
+    loading,
+    error,
+  };
 };
 
 export default useGetCollection;
