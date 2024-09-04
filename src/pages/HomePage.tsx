@@ -4,6 +4,11 @@ import SearchBar from "../components/SearchBar";
 import GoogleMapp from "../components/GoogleMap";
 import useGeocode from "../hooks/googleMapsHooks/useGeocode";
 import { useBrowserGeolocation } from "../hooks/googleMapsHooks/useBrowserGeoLocation";
+import RestaurantList from '../components/RestaurantList';
+import { CollectionReference, collection } from 'firebase/firestore';
+import { firedb } from "../service/firebase";
+import { Restaurant } from "../types/User.types";
+import useGetCollection from "../hooks/useGetCollection";
 
 const HomePage = () => {
   const [selectedAddress, setSelectedAddress] = useState("Malmö");
@@ -13,6 +18,9 @@ const HomePage = () => {
 
   const { data: geocodeData } = useGeocode(selectedAddress);
   const { location, error: geolocationError } = useBrowserGeolocation();
+
+  const colRef = collection(firedb, "restaurants") as CollectionReference<Restaurant>;
+  const { data: restaurants, loading, error } = useGetCollection(colRef);
 
   useEffect(() => {
     if (location) {
@@ -50,9 +58,8 @@ const HomePage = () => {
         <SearchBar onSearch={setSelectedAddress} onLocateUser={handleLocateUser} />
         {/* <Image src="https://placehold.co/400" /> */}
         <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} userLocation={userLocation}/>
-        //Add component for rendering lists
+        <RestaurantList restaurants={restaurants} loading={loading} error={error} />
       </Container>
-    
   );
 };
 
