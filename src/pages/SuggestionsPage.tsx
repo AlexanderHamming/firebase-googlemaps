@@ -4,6 +4,7 @@ import { Form, Button } from 'react-bootstrap';
 import { Restaurant } from '../types/User.types';
 import { addDoc, collection } from 'firebase/firestore';
 import { firedb } from '../service/firebase';
+import { toast } from 'react-toastify';
 
 interface OptionType {
     value: string;
@@ -77,10 +78,10 @@ const RestaurantForm: React.FC = () => {
                 ...restaurant,
                 createdAt: new Date()
             });
-            alert('Form submitted successfully!');
+            toast('Form submitted successfully!');
         } catch (error) {
             console.error("Error submitting form: ", error);
-            alert('Failed to submit form.');
+            toast('Failed to submit form.');
         }
     };
 

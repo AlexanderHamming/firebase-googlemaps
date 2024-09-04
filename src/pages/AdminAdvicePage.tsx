@@ -1,139 +1,111 @@
 import React, { useEffect, useState } from "react";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
 import { firedb } from "../service/firebase";
-import { Restaurant } from "../types/User.types";
-import {
-    useReactTable,
-    getCoreRowModel,
-    flexRender,
-    ColumnDef,
-} from "@tanstack/react-table";
+import { RestaurantWithId } from "../types/User.types";
+import SuggestionsTable from "../components/SuggestionsTable";
+import { toast } from "react-toastify";
+import { Container } from "react-bootstrap";
 
 const AdminAdvicePage: React.FC = () => {
-    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    const [restaurants, setRestaurants] = useState<RestaurantWithId[]>([]);
+    const [editMode, setEditMode] = useState<string | null>(null);
+    const [editData, setEditData] = useState<Partial<RestaurantWithId> | null>(null);
 
     useEffect(() => {
-        const fetchFormSuggestions = async (): Promise<Restaurant[]> => {
+        const fetchFormSuggestions = async (): Promise<RestaurantWithId[]> => {
             const formSuggestions = await getDocs(collection(firedb, "formSuggestions"));
-            return formSuggestions.docs.map((doc) => doc.data() as Restaurant);
+            const suggestions = formSuggestions.docs.map(doc => {
+                return { id: doc.id, ...doc.data() } as RestaurantWithId;
+            });
+            return suggestions;
         };
 
         const getCollection = async () => {
-            const suggestions: Restaurant[] = await fetchFormSuggestions();
+            const suggestions: RestaurantWithId[] = await fetchFormSuggestions();
             setRestaurants(suggestions);
         };
 
         getCollection();
     }, []);
 
-    const columns = React.useMemo<ColumnDef<Restaurant>[]>(
-        () => [
-            {
-                accessorKey: "name",
-                header: "Name",
-            },
-            {
-                accessorKey: "address",
-                header: "Address",
-            },
-            {
-                accessorKey: "city",
-                header: "City",
-            },
-            {
-                accessorKey: "description",
-                header: "Description",
-            },
-            {
-                accessorKey: "category",
-                header: "Category",
-                cell: ({ getValue }) => getValue<string[]>().join(", "),
-            },
-            {
-                accessorKey: "offer",
-                header: "Offer",
-                cell: ({ getValue }) => getValue<string[]>().join(", "),
-            },
-            {
-                accessorKey: "phone",
-                header: "Phone",
-            },
-            {
-                accessorKey: "email",
-                header: "Email",
-            },
-            {
-                accessorKey: "website",
-                header: "Website",
-            },
-            {
-                accessorKey: "facebook",
-                header: "Facebook",
-            },
-            {
-                accessorKey: "instagram",
-                header: "Instagram",
-            },
-            //For buttons
-            {
-                id: 'actions',
-                header: 'Actions',
-                cell: ({ row }) => (
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={() => handleEdit(row.original)}>Edit</button>
-                        <button onClick={() => handleDelete(row.original)}>Delete</button>
-                        <button onClick={() => handleAddToDb(row.original)}>Add to DB</button>
-                    </div>
-                ),
-            },
-        ],
-        []
-    );
-
-    const table = useReactTable({
-        data: restaurants,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    });
-
-
-    const handleEdit = (restaurant: Restaurant) => {
-        console.log("Edit", restaurant);
+    const handleEditClick = (restaurant: RestaurantWithId) => {
+        setEditMode(restaurant.id);
+        setEditData({ ...restaurant });
     };
 
-    const handleDelete = (restaurant: Restaurant) => {
-        console.log("Delete", restaurant);
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEditData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleAddToDb = (restaurant: Restaurant) => {
-        console.log("Add to DB", restaurant);
+    const handleSaveClick = async () => {
+        if (editMode && editData) {
+            try {
+                const docRef = doc(firedb, 'formSuggestions', editMode);
+                await updateDoc(docRef, editData);
+
+                setRestaurants(prev =>
+                    prev.map(rest => rest.id === editMode ? { ...rest, ...editData } : rest)
+                );
+
+                setEditMode(null);
+                setEditData(null);
+                toast("Changes saved successfully!");
+            } catch (error) {
+                console.error("Error saving document: ", error);
+                toast('Failed to save changes.');
+            }
+        }
+    };
+
+    const handleDelete = async (restaurant: RestaurantWithId) => {
+        try {
+            const id = restaurant.id;
+            const docRef = doc(firedb, 'formSuggestions', id);
+
+            await deleteDoc(docRef);
+
+            setRestaurants(prev => prev.filter(restaurant => restaurant.id !== id));
+            toast("Deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting document: ", error);
+            toast('Failed to delete.');
+        }
+    };
+
+    const handleAddToDb = async (restaurant: RestaurantWithId) => {
+        const id = restaurant.id;
+        const docRef = doc(firedb, 'formSuggestions', id);
+        const restaurantForDb = restaurants.find(restaurant => restaurant.id === id);
+
+        try {
+            await addDoc(collection(firedb, 'restaurants'), {
+                ...restaurantForDb,
+                createdAt: new Date(),
+            });
+            toast("It's now in the database!!");
+
+            await deleteDoc(docRef);
+            setRestaurants(prev => prev.filter(restaurant => restaurant.id !== id));
+        } catch (error) {
+            console.error("Error adding to database: ", error);
+            toast('Failed to add to database.');
+        }
     };
 
     return (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
-                            <th key={header.id} style={{ border: "1px solid black", padding: "8px" }}>
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody>
-                {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                            <td key={cell.id} style={{ border: "1px solid black", padding: "8px" }}>
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </td>
-                        ))}
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+        <Container>
+            <SuggestionsTable
+                restaurants={restaurants}
+                editMode={editMode}
+                editData={editData}
+                onEditClick={handleEditClick}
+                onInputChange={handleInputChange}
+                onSaveClick={handleSaveClick}
+                onDelete={handleDelete}
+                onAddToDb={handleAddToDb}
+            />
+        </Container>
     );
 };
 
