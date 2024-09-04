@@ -1,75 +1,79 @@
-
 .container {
-    max-width: 100%;
-    overflow-x: auto;
-    padding: 16px;
-    box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; 
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
-th, td {
-    padding: 8px;
-    border: 1px solid black;
-    word-wrap: break-word; 
-    text-align: left;
+th,
+td {
+  padding: 8px;
+  border: 1px solid black;
+  word-wrap: break-word;
+  text-align: left;
 }
 
 .actions-container {
-    display: flex;
-    flex-wrap: wrap; 
-    gap: 4px; 
-    justify-content: flex-end; 
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
 }
 
 .actions-container button {
-    padding: 4px 8px; 
-    font-size: 12px; 
-    flex-shrink: 1; 
-    max-width: 100%; 
+  padding: 4px 8px;
+  font-size: 12px;
+  flex-shrink: 1;
+  max-width: 100%;
 }
 
-
 td {
-    white-space: nowrap; 
-    overflow: hidden;
-    text-overflow: ellipsis; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media (max-width: 768px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
 
-    th {
-        display: none; 
-    }
+  th {
+    display: none;
+  }
 
-    tr {
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        padding: 10px;
-    }
+  tr {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
 
-    td {
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-        white-space: normal;
-    }
+  td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    white-space: normal;
+  }
 
-    td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
-    }
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
 }

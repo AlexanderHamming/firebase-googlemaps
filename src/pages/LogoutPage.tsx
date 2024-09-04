@@ -5,20 +5,22 @@ import { Button } from "react-bootstrap";
 import "../assets/LogoutButton.scss";
 
 const LogoutPage = () => {
-    const { logout } = useAuth();
-    const navigate = useNavigate();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-    const tapOut = () => {
-        logout();
-        navigate("/");
-    }
+  const tapOut = () => {
+    logout();
+    navigate("/");
+  };
 
-    return (
-        <Container className="logout-container">
-            <p>Wanna get out of here?</p>
-            <Button onClick={tapOut} className="button-center">Log Out</Button>
-        </Container>
-    )
-}
+  return (
+    <Container className="logout-container">
+      <p>Wanna get out of here?</p>
+      <Button onClick={tapOut} className="button-center">
+        Log Out
+      </Button>
+    </Container>
+  );
+};
 
 export default LogoutPage;

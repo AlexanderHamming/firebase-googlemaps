@@ -4,8 +4,8 @@ export interface LoginCredentials {
 }
 
 export interface Geopoint {
-  lat: number
-  lng: number
+  lat: number;
+  lng: number;
 }
 
 export interface Restaurant {
@@ -36,6 +36,5 @@ export interface RestaurantWithId {
   phone?: string;
   website?: string;
   location: Geopoint;
-  id: string
-
+  id: string;
 }

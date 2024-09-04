@@ -11,7 +11,11 @@ import "../assets/LoginPage.scss";
 
 const LoginPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { handleSubmit, register, formState: { errors } } = useForm<LoginCredentials>();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<LoginCredentials>();
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -25,7 +29,7 @@ const LoginPage = () => {
       if (err instanceof FirebaseError) {
         toast.error(err.message);
       } else {
-        toast.error("Something wierd happend here")
+        toast.error("Something wierd happend here");
       }
     }
     setIsSubmitting(false);
@@ -36,11 +40,7 @@ const LoginPage = () => {
       <Form onSubmit={handleSubmit(onLogin)} className="login-form">
         <Form.Group controlId="email" className="mb-3">
           <Form.Label>Email</Form.Label>
-          <Form.Control
-            placeholder="Enter your email here"
-            type="email"
-            {...register("email", { required: "Email is required" })}
-          />
+          <Form.Control placeholder="Enter your email here" type="email" {...register("email", { required: "Email is required" })} />
           {errors.email && <p className="invalid">{errors.email.message}</p>}
         </Form.Group>
         <Form.Group controlId="password" className="mb-3">
@@ -49,16 +49,12 @@ const LoginPage = () => {
             type="password"
             {...register("password", {
               required: "Password is required",
-              minLength: { value: 6, message: "Password must be at least 6 characters" }
+              minLength: { value: 6, message: "Password must be at least 6 characters" },
             })}
           />
           {errors.password && <p className="invalid">{errors.password.message}</p>}
         </Form.Group>
-        <Button 
-          disabled={isSubmitting} 
-          type="submit" 
-          className="login-button"
-        >
+        <Button disabled={isSubmitting} type="submit" className="login-button">
           {isSubmitting ? "Logging in..." : "Log In"}
         </Button>
       </Form>

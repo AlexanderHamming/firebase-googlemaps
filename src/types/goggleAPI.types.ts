@@ -11,7 +11,6 @@ export interface GeocodeLocationType {
   status: string;
 }
 
-
 export interface ReverseGeocodeResultType {
   formatted_address: string;
 }

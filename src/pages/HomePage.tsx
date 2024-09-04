@@ -4,7 +4,7 @@ import SearchBar from "../components/SearchBar";
 import GoogleMapp from "../components/GoogleMap";
 import useGeocode from "../hooks/googleMapsHooks/useGeocode";
 import { useBrowserGeolocation } from "../hooks/googleMapsHooks/useBrowserGeoLocation";
-import RestaurantList from '../components/RestaurantList';
+import RestaurantList from "../components/RestaurantList";
 import { restaurantsCollection } from "../service/firebase";
 import useGetCollection from "../hooks/useGetCollection";
 
@@ -54,7 +54,7 @@ const HomePage = () => {
   return (
     <Container id="searchMapContainer">
       <SearchBar onSearch={setSelectedAddress} onLocateUser={handleLocateUser} />
-      <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} userLocation={userLocation}/>
+      <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} userLocation={userLocation} />
       <RestaurantList restaurants={restaurants} loading={loading} error={error} />
     </Container>
   );

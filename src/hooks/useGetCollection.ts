@@ -1,10 +1,7 @@
 import { CollectionReference, getDocs, query, QueryConstraint } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 
-const useGetCollection = <T>(
-  colRef: CollectionReference<T>,
-  ...queryConstraints: QueryConstraint[]
-) => {
+const useGetCollection = <T>(colRef: CollectionReference<T>, ...queryConstraints: QueryConstraint[]) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<(T & { id: string })[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +14,7 @@ const useGetCollection = <T>(
       const queryRef = query(colRef, ...queryConstraints);
       const snapshot = await getDocs(queryRef);
 
-      const data = snapshot.docs.map(doc => ({
+      const data = snapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       })) as (T & { id: string })[];
@@ -27,7 +24,7 @@ const useGetCollection = <T>(
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unknown error occurred');
+        setError("An unknown error occurred");
       }
     } finally {
       setLoading(false);

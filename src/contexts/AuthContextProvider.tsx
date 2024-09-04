@@ -12,26 +12,26 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-	const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const login = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password)
-  }
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
   const logout = () => {
-    return signOut(auth)
-  }
+    return signOut(auth);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
     });
-    return unsubscribe
+    return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout}}>
+    <AuthContext.Provider value={{ currentUser, login, logout }}>
       {loading ? (
         <div id="initial-loading">
           <p>Loading...</p>

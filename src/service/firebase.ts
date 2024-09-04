@@ -24,7 +24,7 @@ export const storage = getStorage(app);
 // Helper to add type to collection references
 const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(firedb, collectionName) as CollectionReference<T>;
-}
+};
 
 // When creating new collections, add them here.
 // Example:

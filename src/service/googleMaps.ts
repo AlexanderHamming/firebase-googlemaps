@@ -1,8 +1,5 @@
 import axios from "axios";
-import {
-  GeocodeLocationType,
-  ReverseGeocodeResultType,
-} from "../types/goggleAPI.types";
+import { GeocodeLocationType, ReverseGeocodeResultType } from "../types/goggleAPI.types";
 
 const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const baseUrl = import.meta.env.VITE_API_BASEURL;
@@ -31,17 +28,12 @@ const get = async <T>(endpoint: string, params = {}): Promise<T> => {
 };
 
 // adress till kordinator
-export const getGeocodeCoordinates = async (
-  address: string
-): Promise<GeocodeLocationType> => {
+export const getGeocodeCoordinates = async (address: string): Promise<GeocodeLocationType> => {
   return get<GeocodeLocationType>("/geocode/json", { address });
 };
 
 // kordinator till adress
-export const getReverseGeocode = async (
-  lat: number,
-  lng: number
-): Promise<ReverseGeocodeResultType> => {
+export const getReverseGeocode = async (lat: number, lng: number): Promise<ReverseGeocodeResultType> => {
   return get<ReverseGeocodeResultType>("/geocode/json", {
     latlng: `${lat},${lng}`,
   });
