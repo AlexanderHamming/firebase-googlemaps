@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import { getFirestore, getDocs, collection } from "firebase/firestore";
+import { getFirestore, collection, DocumentData, CollectionReference } from "firebase/firestore";
 import { Restaurant } from "../types/User.types";
 
 const firebaseConfig = {
@@ -21,7 +21,14 @@ export const firedb = getFirestore(app);
 
 export const storage = getStorage(app);
 
+// Helper to add type to collection references
+const createCollection = <T = DocumentData>(collectionName: string) => {
+  return collection(firedb, collectionName) as CollectionReference<T>;
+}
 
-// collections
+// When creating new collections, add them here.
+// Example:
+// export const exampleCollection = createCollection<CollectionType>("example");
 
-
+// Collections
+export const restaurantsCollection = createCollection<Restaurant>("restaurants");

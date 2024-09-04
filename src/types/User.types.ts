@@ -3,6 +3,11 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface Geopoint {
+  lat: number
+  lng: number
+}
+
 export interface Restaurant {
   address: string;
   category: string[];
@@ -14,6 +19,7 @@ export interface Restaurant {
   name: string;
   offer: string[];
   phone?: string;
+  location: Geopoint;
   website?: string;
 }
 
@@ -29,5 +35,7 @@ export interface RestaurantWithId {
   offer: string[];
   phone?: string;
   website?: string;
+  location: Geopoint;
   id: string
+
 }

@@ -18,6 +18,7 @@ function NavBarAdmin() {
                         <NavDropdown title="Admin Paths" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/edit">Edit Page</NavDropdown.Item>
                             <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                            <NavDropdown.Item href="/advice">Users Suggestions</NavDropdown.Item>
                             <NavDropdown.Item href="/logout">Sign out?</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
