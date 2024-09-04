@@ -4,7 +4,6 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import LogoutPage from "./pages/LogoutPage";
 import ProfilePage from "./pages/ProfilePage";
-import EditPage from "./pages/EditPage";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import "../src/assets/App.scss"
 import NavBar from "./components/NavBar";
@@ -12,7 +11,6 @@ import NavBarAdmin from "./components/NavBarAdmin";
 import { Container } from "react-bootstrap";
 import SuggestionsPage from "./pages/SuggestionsPage";
 import useAuth from "./hooks/useAuth";
-import { User } from "firebase/auth";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AdminAdvicePage from "./pages/AdminAdvicePage";
@@ -41,7 +39,6 @@ function App() {
         {/* Protected routes */}
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/edit" element={<EditPage />} />
           <Route path="/advice" element={<AdminAdvicePage />} />
         </Route>
       </Routes>
