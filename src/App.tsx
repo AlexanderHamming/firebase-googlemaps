@@ -5,29 +5,31 @@ import LoginPage from "./pages/LoginPage";
 import LogoutPage from "./pages/LogoutPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-import "../src/assets/App.scss"
+import "../src/assets/App.scss";
 import NavBar from "./components/NavBar";
 import NavBarAdmin from "./components/NavBarAdmin";
 import { Container } from "react-bootstrap";
 import SuggestionsPage from "./pages/SuggestionsPage";
 import useAuth from "./hooks/useAuth";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import AdminAdvicePage from "./pages/AdminAdvicePage";
 
-
 function App() {
-
-  const { currentUser } = useAuth()
+  const { currentUser } = useAuth();
 
   useEffect(() => {
-    console.log("CurrentUser: ", currentUser)
-  }, [currentUser])
+    console.log("CurrentUser: ", currentUser);
+  }, [currentUser]);
   return (
     <Container>
       <ToastContainer />
 
-      {currentUser !== null && <><NavBarAdmin /> <p>Signed in as: {currentUser.email}</p></>}
+      {currentUser !== null && (
+        <>
+          <NavBarAdmin /> <p>Signed in as: {currentUser.displayName}</p>
+        </>
+      )}
       {currentUser === null && <NavBar />}
       <Routes>
         {/* Public routes */}
