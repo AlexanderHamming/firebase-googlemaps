@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const useGetCollection = <T>(colRef: CollectionReference<T>, ...queryConstraints: QueryConstraint[]) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<(T & { id: string })[] | null>(null);
+  const [data, setData] = useState<{ id: string; data: T }[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const getData = useCallback(async () => {
@@ -15,9 +15,9 @@ const useGetCollection = <T>(colRef: CollectionReference<T>, ...queryConstraints
       const snapshot = await getDocs(queryRef);
 
       const data = snapshot.docs.map((doc) => ({
-        ...doc.data(),
         id: doc.id,
-      })) as (T & { id: string })[];
+        data: doc.data(),
+      }));
 
       setData(data);
     } catch (err) {
