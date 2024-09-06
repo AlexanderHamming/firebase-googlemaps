@@ -14,6 +14,7 @@ import useAuth from "./hooks/useAuth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminAdvicePage from "./pages/AdminAdvicePage";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
   const { currentUser } = useAuth();
