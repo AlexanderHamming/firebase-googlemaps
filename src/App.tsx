@@ -38,7 +38,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/suggestions" element={<SuggestionsPage />} />
-
+        <Route path="/search" element={<HomePage />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />

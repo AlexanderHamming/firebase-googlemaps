@@ -1,6 +1,8 @@
 import { InputGroup, FormControl, Button } from "react-bootstrap";
 import { useState } from "react";
 import "../assets/SearchBar.scss";
+import { useNavigate } from 'react-router-dom';
+
 
 interface SearchBarProps {
   onSearch: (address: string) => void;
@@ -9,15 +11,17 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch, onLocateUser }) => {
   const [input, setInput] = useState<string>("");
+  const navigate = useNavigate(); 
 
   const handleSearch = () => {
-    onSearch(input);
+    const trimmedLowerCaseInput = input.trim().toLocaleLowerCase();
+    navigate(`/search?city=${trimmedLowerCaseInput}`);
+        onSearch(trimmedLowerCaseInput); 
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setInput(value);
-    console.log(input);
   };
 
   return (

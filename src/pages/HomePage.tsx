@@ -7,6 +7,7 @@ import { useBrowserGeolocation } from "../hooks/googleMapsHooks/useBrowserGeoLoc
 import RestaurantList from "../components/RestaurantList";
 import { restaurantsCollection } from "../service/firebase";
 import useGetCollection from "../hooks/useGetCollection";
+import { useLocation } from 'react-router-dom';
 
 const HomePage = () => {
   const [selectedAddress, setSelectedAddress] = useState("Malmö");
@@ -14,8 +15,23 @@ const HomePage = () => {
   const [zoom, setZoom] = useState<number>(11);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
+const location = useLocation();
+
+    
+    const getQueryParams = () => {
+        const searchParams = new URLSearchParams(location.search);
+        return searchParams.get("city") || "";  
+      };
+    
+      useEffect(() => {
+        const city = getQueryParams();
+        if (city) {
+          setSelectedAddress(city);  
+        }
+      }, [location]);
+
   const { data: geocodeData } = useGeocode(selectedAddress);
-  const { location, error: geolocationError } = useBrowserGeolocation();
+  const { location: UsersLocation, error: geolocationError } = useBrowserGeolocation();
 
   // How to pass and update constraints
   // where("city", "==", selectedAddress);
@@ -23,7 +39,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (location) {
-      setUserLocation(location);
+      setUserLocation(UsersLocation);
     } else if (geolocationError) {
       console.error("Error fetching user location:", geolocationError);
     }
@@ -45,7 +61,7 @@ const HomePage = () => {
 
   const handleLocateUser = () => {
     if (location) {
-      setCoordinates(location);
+      setCoordinates(UsersLocation);
       setSelectedAddress("Your location");
       setZoom(15);
     }
