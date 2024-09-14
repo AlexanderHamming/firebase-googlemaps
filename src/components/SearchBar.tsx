@@ -26,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, onLocateUser }) => {
 
   return (
     <InputGroup className="search-bar">
-      <FormControl placeholder="What do you wish to eat...?" aria-label="What do you wish to eat..?" aria-describedby="basic-addon2" id="inputField" value={input} onChange={handleChange} />
+      <FormControl placeholder="Svedala..." aria-label="What do you wish to eat..?" aria-describedby="basic-addon2" id="inputField" value={input} onChange={handleChange} />
       <Button variant="outline-secondary" id="button-addon" onClick={handleSearch}>
         Search
       </Button>

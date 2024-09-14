@@ -32,6 +32,7 @@ function App() {
         </>
       )}
       {currentUser === null && <NavBar />}
+      
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<HomePage />} />
