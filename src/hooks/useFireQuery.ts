@@ -1,15 +1,13 @@
-import { useState, useEffect, useRef } from "react";
 import { Query, getDocs, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 export const useFireQuery = <T>(
   query: Query<T>,
   realTime: boolean = false
 ) => {
-  const [data, setData] = useState<T[] | null>(null);
+  const [data, setData] = useState<{ id: string; data: T }[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-
-  const queryRef = useRef(query);
 
   useEffect(() => {
     if (!query) return;
@@ -19,8 +17,11 @@ export const useFireQuery = <T>(
         setLoading(true);
 
         if (realTime) {
-          const unsubscribe = onSnapshot(queryRef.current, (snapshot) => {
-            const results: T[] = snapshot.docs.map((doc) => doc.data() as T);
+          const unsubscribe = onSnapshot(query, (snapshot) => {
+            const results = snapshot.docs.map(doc => ({
+              id: doc.id,
+              data: doc.data() as T,
+            }));
             setData(results);
             setLoading(false);
           }, (error) => {
@@ -29,8 +30,11 @@ export const useFireQuery = <T>(
           });
           return () => unsubscribe();
         } else {
-          const querySnapshot = await getDocs(queryRef.current);
-          const results: T[] = querySnapshot.docs.map((doc) => doc.data() as T);
+          const querySnapshot = await getDocs(query);
+          const results = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            data: doc.data() as T,
+          }));
           setData(results);
         }
       } catch (err) {
@@ -41,7 +45,7 @@ export const useFireQuery = <T>(
     };
 
     getData();
-  }, [realTime]);
+  }, [realTime, query]);
 
   return { data, loading, error };
 };

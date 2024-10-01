@@ -15,7 +15,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminAdvicePage from "./pages/AdminAdvicePage";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import RestaurantsPage from "./pages/TestPage";
 
 function App() {
   const { currentUser } = useAuth();
@@ -41,7 +40,6 @@ function App() {
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/suggestions" element={<SuggestionsPage />} />
         <Route path="/search" element={<HomePage />} />
-        <Route path="/restaurants" element={<RestaurantsPage />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />

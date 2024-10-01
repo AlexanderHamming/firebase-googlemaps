@@ -6,7 +6,8 @@ import useGeocode from "../hooks/googleMapsHooks/useGeocode";
 import { useBrowserGeolocation } from "../hooks/googleMapsHooks/useBrowserGeoLocation";
 import RestaurantList from "../components/RestaurantList";
 import { restaurantsCollection } from "../service/firebase";
-import useGetCollection from "../hooks/useGetCollection";
+import { query, where } from "firebase/firestore";
+import { useFireQuery } from "../hooks/useFireQuery";
 import { useLocation } from 'react-router-dom';
 
 const HomePage = () => {
@@ -15,35 +16,39 @@ const HomePage = () => {
   const [zoom, setZoom] = useState<number>(11);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-const location = useLocation();
+  const location = useLocation();
+  
+  const getQueryParams = () => {
+    const searchParams = new URLSearchParams(location.search);
+    return searchParams.get("city") || "";  
+  };
 
-    
-    const getQueryParams = () => {
-        const searchParams = new URLSearchParams(location.search);
-        return searchParams.get("city") || "";  
-      };
-    
-      useEffect(() => {
-        const city = getQueryParams();
-        if (city) {
-          setSelectedAddress(city);  
-        }
-      }, [location]);
+  useEffect(() => {
+    const city = getQueryParams();
+    if (city) {
+      setSelectedAddress(city);  
+    }
+  }, [location]);
 
   const { data: geocodeData } = useGeocode(selectedAddress);
   const { location: UsersLocation, error: geolocationError } = useBrowserGeolocation();
 
-  // How to pass and update constraints
-  // where("city", "==", selectedAddress);
-  const { data: restaurants, loading, error } = useGetCollection(restaurantsCollection);
+  // query for the selected adress...Removing comment later.
+  const restaurantsQuery = query(
+    restaurantsCollection,
+    where("city", "==", selectedAddress.toLowerCase())
+  );
+  
+  // Using the useFireQuery here with a boolean true, should work as stream..Not tested yet.
+  const { data: restaurants, loading, error } = useFireQuery(restaurantsQuery, true);
 
   useEffect(() => {
-    if (location) {
+    if (UsersLocation) {
       setUserLocation(UsersLocation);
     } else if (geolocationError) {
       console.error("Error fetching user location:", geolocationError);
     }
-  }, [location, geolocationError]);
+  }, [UsersLocation, geolocationError]);
 
   useEffect(() => {
     if (geocodeData && geocodeData.results && geocodeData.results[0]) {
@@ -60,7 +65,7 @@ const location = useLocation();
   }, [geocodeData]);
 
   const handleLocateUser = () => {
-    if (location) {
+    if (UsersLocation) {
       setCoordinates(UsersLocation);
       setSelectedAddress("Your location");
       setZoom(15);
@@ -71,7 +76,7 @@ const location = useLocation();
     <Container id="searchMapContainer">
       <SearchBar onSearch={setSelectedAddress} onLocateUser={handleLocateUser} />
       <GoogleMapp selectedAddress={selectedAddress} coordinates={coordinates} zoom={zoom} userLocation={userLocation} />
-      <RestaurantList restaurants={restaurants} loading={loading} error={error} />
+      <RestaurantList restaurants={restaurants} loading={loading} error={error?.message || null} />
     </Container>
   );
 };
