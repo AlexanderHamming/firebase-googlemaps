@@ -14,14 +14,13 @@ const RestaurantList: React.FC<RestaurantListProps> = ({ restaurants, loading, e
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!restaurants || restaurants.length === 0) return <div>No food for you</div>;
-
   
   return (
     <Container fluid className="restaurant-list-container">
       <div className="restaurant-list">
         {restaurants.map(({ id, data: restaurant }) => (
           <div key={id} className="restaurant-item">
-            <RestaurantCard id={id} restaurant={restaurant} />
+            <RestaurantCard id={id} restaurant={restaurant} />  
           </div>
         ))}
       </div>
