@@ -12,39 +12,44 @@ export const useFireQuery = <T>(
   useEffect(() => {
     if (!query) return;
 
-    const getData = async () => {
-      try {
-        setLoading(true);
+    setLoading(true);
 
-        if (realTime) {
-          const unsubscribe = onSnapshot(query, (snapshot) => {
-            const results = snapshot.docs.map(doc => ({
-              id: doc.id,
-              data: doc.data() as T,
-            }));
-            setData(results);
-            setLoading(false);
-          }, (error) => {
-            setError(error);
-            setLoading(false);
-          });
-          return () => unsubscribe();
-        } else {
-          const querySnapshot = await getDocs(query);
-          const results = querySnapshot.docs.map(doc => ({
+    if (realTime) {
+      const unsubscribe = onSnapshot(
+        query,
+        (snapshot) => {
+          const results = snapshot.docs.map((doc) => ({
             id: doc.id,
             data: doc.data() as T,
           }));
           setData(results);
+          setLoading(false);
+        },
+        (error) => {
+          setError(error);
+          setLoading(false);
         }
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      );
 
-    getData();
+      return () => unsubscribe();
+    } else {
+      const getData = async () => {
+        try {
+          const querySnapshot = await getDocs(query);
+          const results = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data() as T,
+          }));
+          setData(results);
+        } catch (err) {
+          setError(err as Error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      getData();
+    }
   }, [realTime, query]);
 
   return { data, loading, error };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Container } from "react-bootstrap";
 import SearchBar from "../components/SearchBar";
 import GoogleMapp from "../components/GoogleMap";
@@ -34,10 +34,12 @@ const HomePage = () => {
   const { location: UsersLocation, error: geolocationError } = useBrowserGeolocation();
 
   // query for the selected adress...Removing comment later.
-  const restaurantsQuery = query(
-    restaurantsCollection,
-    where("city", "==", selectedAddress.toLowerCase())
-  );
+  const restaurantsQuery = useMemo(() => {
+    return query(
+      restaurantsCollection,
+      where("city", "==", selectedAddress.toLowerCase())
+    );
+  }, [selectedAddress]);
   
   // Using the useFireQuery here with a boolean true, should work as stream..Not tested yet.
   const { data: restaurants, loading, error } = useFireQuery(restaurantsQuery, true);
