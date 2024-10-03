@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminAdvicePage from "./pages/AdminAdvicePage";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import ApprovedRestaurantsPage from "./pages/ApprovedRestaurantsPage";
 
 function App() {
   const { currentUser } = useAuth();
@@ -44,6 +45,7 @@ function App() {
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/advice" element={<AdminAdvicePage />} />
+          <Route path="/places" element={<ApprovedRestaurantsPage />} />
         </Route>
       </Routes>
     </Container>
