@@ -12,13 +12,6 @@ const AdminAdvicePage: React.FC = () => {
   const [editData, setEditData] = useState<Partial<RestaurantWithId> | null>(null);
 
 
- // Lägg till en useEffect som körs när restaurants uppdateras, för att se när uppdateringen faktiskt sker
- useEffect(() => {
-  if (restaurants.length > 0) {
-    console.log("Restaurants in state after being set:", restaurants); // Kontrollera att tillståndet uppdateras korrekt
-  }
-}, [restaurants]);
-
   useEffect(() => {
     const fetchFormSuggestions = async (): Promise<RestaurantWithId[]> => {
       const formSuggestions = await getDocs(collection(firedb, "formSuggestions"));
@@ -31,10 +24,7 @@ const AdminAdvicePage: React.FC = () => {
 
     const getCollection = async () => {
       const suggestions: RestaurantWithId[] = await fetchFormSuggestions();
-      console.log("Fetched restaurants:", suggestions);
       setRestaurants(suggestions); 
-      console.log("Restaurants immediately after setting state:", suggestions); // Detta loggar rätt?
-      console.log("Restaurants from state after setState call:", restaurants); 
     };
 
     getCollection();
