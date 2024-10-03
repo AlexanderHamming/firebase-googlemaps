@@ -13,7 +13,7 @@ interface OptionType {
 }
 
 const RestaurantForm: React.FC = () => {
-  const [restaurant, setRestaurant] = useState<Restaurant>({
+  const initialInputValues = {
     address: "",
     category: [],
     city: "",
@@ -26,7 +26,9 @@ const RestaurantForm: React.FC = () => {
     phone: "",
     website: "",
     location: { lat: 0, lng: 0 },
-  });
+  };
+
+  const [restaurant, setRestaurant] = useState<Restaurant>(initialInputValues);
 
   const { data: geocodeData } = useGeocode(restaurant.address, restaurant.city);
 
@@ -91,6 +93,7 @@ const RestaurantForm: React.FC = () => {
         createdAt: new Date(),
       });
       toast("Form submitted successfully!");
+      setRestaurant(initialInputValues);
     } catch (error) {
       console.error("Error submitting form: ", error);
       toast("Failed to submit form.");
