@@ -11,18 +11,20 @@ const AdminAdvicePage: React.FC = () => {
   const [editMode, setEditMode] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<RestaurantWithId> | null>(null);
 
+
   useEffect(() => {
     const fetchFormSuggestions = async (): Promise<RestaurantWithId[]> => {
       const formSuggestions = await getDocs(collection(firedb, "formSuggestions"));
       const suggestions = formSuggestions.docs.map((doc) => {
         return { id: doc.id, ...doc.data() } as RestaurantWithId;
       });
+ 
       return suggestions;
     };
 
     const getCollection = async () => {
       const suggestions: RestaurantWithId[] = await fetchFormSuggestions();
-      setRestaurants(suggestions);
+      setRestaurants(suggestions); 
     };
 
     getCollection();
@@ -74,22 +76,22 @@ const AdminAdvicePage: React.FC = () => {
   const handleAddToDb = async (restaurant: RestaurantWithId) => {
     const id = restaurant.id;
     const docRef = doc(firedb, "formSuggestions", id);
-    const restaurantForDb = restaurants.find((restaurant) => restaurant.id === id);
-
+  
     try {
       await addDoc(collection(firedb, "restaurants"), {
-        ...restaurantForDb,
+        ...restaurant,
         createdAt: new Date(),
       });
       toast("It's now in the database!!");
-
+  
       await deleteDoc(docRef);
-      setRestaurants((prev) => prev.filter((restaurant) => restaurant.id !== id));
+      setRestaurants((prev) => prev.filter((rest) => rest.id !== id));
     } catch (error) {
       console.error("Error adding to database: ", error);
       toast("Failed to add to database.");
     }
   };
+  
 
   return (
     <Container>
