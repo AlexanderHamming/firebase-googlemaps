@@ -6,6 +6,7 @@ import {
 } from "@vis.gl/react-google-maps";
 import { useState, useEffect } from "react";
 import placeholderImage from "../assets/imgs/restaurantPlaceholder.jpeg";
+import { Carousel } from 'react-bootstrap';
 
 
 interface GoogleMappProps {
@@ -60,6 +61,11 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
       ? selectedRestaurantData.images[0]
       : placeholderImage;
 
+      const images =
+  selectedRestaurantData?.images && selectedRestaurantData.images.length > 0
+    ? selectedRestaurantData.images
+    : [placeholderImage];
+
   return (
     <APIProvider apiKey={apiKey}>
       <Map
@@ -89,7 +95,7 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
           </InfoWindow>
         )}
 
-        {restaurants && restaurants.length > 0 ? (
+{restaurants && restaurants.length > 0 ? (
           restaurants.map((restaurant) => (
             <AdvancedMarker
               key={restaurant.id}
@@ -101,34 +107,61 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
           <p>No restaurants available.</p>
         )}
 
-{selectedRestaurant && selectedRestaurantData && (
-            <InfoWindow
+        {selectedRestaurant && selectedRestaurantData && (
+          <InfoWindow
             position={selectedRestaurantData.location}
             onCloseClick={() => setSelectedRestaurant(null)}
           >
-            <div style={{ maxWidth: "200px" }}>
+            <div style={{ maxWidth: '200px' }}>
               <h2>{selectedRestaurantData.name}</h2>
               <h3>{selectedRestaurantData.description}</h3>
               <p>Address: {selectedRestaurantData.address}</p>
-              <p>Category: {selectedRestaurantData.category?.join(", ")}</p>
-              <p>Offer: {selectedRestaurantData.offer?.join(", ")}</p>
+              <p>Category: {selectedRestaurantData.category?.join(', ')}</p>
+              <p>Offer: {selectedRestaurantData.offer?.join(', ')}</p>
               <p>Website: {selectedRestaurantData.website}</p>
               <p>Email: {selectedRestaurantData.email}</p>
               <p>Phone: {selectedRestaurantData.phone}</p>
               <p>
                 <a
                   href={directionsLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target='_blank'
+                  rel='noopener noreferrer'
                 >
                   Get Directions
                 </a>
               </p>
-              <img
-                src={imageUrl}
-                alt={`${selectedRestaurantData.name} Image`}
-                style={{ width: "100%", height: "auto", marginTop: "10px" }}
-              />
+              {images.length > 1 ? (
+                <Carousel
+                  indicators={false}
+                  controls={images.length > 1}
+                  interval={null}
+                  style={{ marginTop: '10px' }}
+                >
+                  {images.map((imgUrl: string, index: number) => (
+                    <Carousel.Item key={index}>
+                      <img
+                        className='d-block w-100'
+                        src={imgUrl}
+                        alt={`${selectedRestaurantData.name} Image ${index + 1}`}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = placeholderImage;
+                        }}
+                      />
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              ) : (
+                <img
+                  src={images[0]}
+                  alt={`${selectedRestaurantData.name} Image`}
+                  style={{ width: '100%', height: 'auto', marginTop: '10px' }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = placeholderImage;
+                  }}
+                />
+              )}
             </div>
           </InfoWindow>
         )}
