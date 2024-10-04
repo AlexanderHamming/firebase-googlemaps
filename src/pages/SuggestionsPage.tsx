@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select, { MultiValue } from "react-select";
 import { Form, Button } from "react-bootstrap";
 import { Restaurant } from "../types/User.types";
@@ -6,7 +6,8 @@ import { addDoc, collection } from "firebase/firestore";
 import { firedb } from "../service/firebase";
 import { toast } from "react-toastify";
 import { useGeocode } from "../hooks/googleMapsHooks/useGeocode";
-
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../service/firebase";
 interface OptionType {
   value: string;
   label: string;
@@ -29,6 +30,8 @@ const RestaurantForm: React.FC = () => {
   };
 
   const [restaurant, setRestaurant] = useState<Restaurant>(initialInputValues);
+  const [images, setImages] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: geocodeData } = useGeocode(restaurant.address, restaurant.city);
 
@@ -83,17 +86,36 @@ const RestaurantForm: React.FC = () => {
     }));
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImages(Array.from(e.target.files));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(restaurant);
-
+  
     try {
+      const imageUrls = await Promise.all(
+        images.map(async (image) => {
+          const imageRef = ref(storage, `restaurantImages/${Date.now()}_${image.name}`);
+          await uploadBytes(imageRef, image);
+          const downloadUrl = await getDownloadURL(imageRef);
+          return downloadUrl;
+        })
+      );
       await addDoc(collection(firedb, "formSuggestions"), {
         ...restaurant,
+        images: imageUrls, 
         createdAt: new Date(),
       });
       toast("Form submitted successfully!");
       setRestaurant(initialInputValues);
+      setImages([]); 
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (error) {
       console.error("Error submitting form: ", error);
       toast("Failed to submit form.");
@@ -155,6 +177,17 @@ const RestaurantForm: React.FC = () => {
       <Form.Group controlId="formInstagram">
         <Form.Label>Instagram</Form.Label>
         <Form.Control type="text" name="instagram" value={restaurant.instagram} onChange={handleInputChange} />
+      </Form.Group>
+
+      <Form.Group controlId="formImages">
+        <Form.Label>Images</Form.Label>
+        <Form.Control
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleImageChange}
+          ref={fileInputRef}
+        />
       </Form.Group>
 
       <Button variant="primary" type="submit">
