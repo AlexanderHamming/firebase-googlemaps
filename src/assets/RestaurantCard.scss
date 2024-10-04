@@ -58,10 +58,13 @@
 
 .social-icon {
   font-size: 1.5rem;
-  color: #333;
-  transition: color 0.3s;
 
-  &:hover {
+  i {
+    color: #333;
+    transition: color 0.3s;
+  }
+
+  &:hover i {
     color: #007bff;
   }
 }
