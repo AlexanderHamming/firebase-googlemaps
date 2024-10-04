@@ -1,6 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import { Restaurant } from "../types/User.types";
+import placeholderImage from "../assets/imgs/restaurantPlaceholder.jpeg";
 import "../assets/RestaurantCard.scss";
 
 interface RestaurantCardProps {
@@ -8,9 +9,16 @@ interface RestaurantCardProps {
 }
 
 const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
+
+  const imageUrl =
+    restaurant.images && restaurant.images.length > 0
+      ? restaurant.images[0] 
+      : placeholderImage;
+
   return (
     <Card className="restaurant-card mb-3 shadow-sm">
-      <Card.Body>
+      <Card.Img variant="top" src={imageUrl} className="restaurant-card-image" alt={`${restaurant.name} Image`}/>
+      <Card.Body className="restaurant-card-body">
         <Card.Title className="restaurant-card-title">
           {restaurant.name || "Not a restaurant"}
         </Card.Title>
