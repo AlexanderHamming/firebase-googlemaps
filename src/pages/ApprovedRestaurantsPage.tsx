@@ -5,6 +5,7 @@ import { RestaurantWithId } from '../types/User.types';
 import ApprovedRestaurantsTable from '../components/ApprovedRestaurantsTable';
 import { toast } from 'react-toastify';
 import { Container } from 'react-bootstrap';
+import AdminSetRestaurant from "../components/AdminSetRestaurant";
 
 const ApprovedRestaurantsPage: React.FC = () => {
   const [restaurants, setRestaurants] = useState<RestaurantWithId[]>([]);
@@ -96,6 +97,7 @@ const ApprovedRestaurantsPage: React.FC = () => {
         onSaveClick={handleSaveClick}
         onDelete={handleDelete}
       />
+       <AdminSetRestaurant />  
     </Container>
   );
 };

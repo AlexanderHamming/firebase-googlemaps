@@ -152,13 +152,6 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
                 }
               </p>
               <p>
-                phone:{" "}
-                {
-                  restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                    .phone
-                }
-              </p>
-              <p>
                 <a
                   href={directionsLink}
                   target="_blank"
