@@ -1,15 +1,34 @@
 .restaurant-card {
   display: flex;
   flex-direction: column;
-  width: 100%;          
-  height: 400px;        
+  width: 100%;
+  height: 400px;
   overflow: hidden;
 }
 
+.restaurant-card-carousel-wrapper {
+  width: 100%;
+  height: 200px; 
+  overflow: hidden;
+}
+
+.restaurant-card-carousel,
 .restaurant-card-image {
   width: 100%;
-  height: 200px;       
-  object-fit: cover;    
+  height: 100%;
+}
+
+.restaurant-card-carousel .carousel-inner,
+.restaurant-card-carousel .carousel-item {
+  width: 100%;
+  height: 100%;
+}
+
+.restaurant-card-carousel .carousel-item img,
+.restaurant-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .restaurant-card-title {
@@ -17,7 +36,7 @@
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
 }
 
 .restaurant-card-body {
@@ -34,15 +53,15 @@
 .social-icons {
   display: flex;
   justify-content: center;
-  gap: 1rem; 
+  gap: 1rem;
 }
 
 .social-icon {
   font-size: 1.5rem;
-  color: #333; 
+  color: #333;
   transition: color 0.3s;
 
   &:hover {
-    color: #007bff; 
+    color: #007bff;
   }
 }
