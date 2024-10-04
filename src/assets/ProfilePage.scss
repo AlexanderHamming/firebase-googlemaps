@@ -19,6 +19,17 @@ input {
   cursor: pointer;
 }
 
+.avatar {
+  width: 4rem;
+  aspect-ratio: 1;
+  background-color: white;
+  border: 0.3rem solid white;
+}
+
+.user-card span {
+  margin: 0.5rem;
+}
+
 #fileInput {
   display: none;
 }

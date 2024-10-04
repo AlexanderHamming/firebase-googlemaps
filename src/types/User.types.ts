@@ -39,3 +39,9 @@ export interface RestaurantWithId {
   location: Geopoint;
   id: string;
 }
+
+export interface UserProfile {
+  id: string;
+  nickname: string;
+  photoURL: string;
+}

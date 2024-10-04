@@ -6,8 +6,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
-import { storage } from "../service/firebase";
+import  { doc, updateDoc, collection, getDocs } from "firebase/firestore";
+import { storage, firedb } from "../service/firebase";
+import { UserProfile } from '../types/User.types';
 import "../assets/ProfilePage.scss";
 import userAvatar from "../assets/imgs/genericAvatar.jpg";
 import useAuth from "../hooks/useAuth";
@@ -42,6 +43,8 @@ const ProfilePage = () => {
   const [avatarUrl, setAvatarUrl] = useState<string>(currentUser?.photoURL ?? userAvatar);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [users, setUsers] = useState<UserProfile[]>([]);
+
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -63,6 +66,18 @@ const ProfilePage = () => {
         setAvatarUrl(currentUser.photoURL);
       }
     }
+    const fetchUsers = async () => {
+      const usersCollection = collection(firedb, "users");
+      const usersSnapshot = await getDocs(usersCollection);
+      const usersList = usersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        nickname: doc.data().nickname || "noname",
+        photoURL: doc.data().photoURL || userAvatar,
+      }));
+      setUsers(usersList);
+    };
+
+    fetchUsers();
   }, [currentUser, setValue]);
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
@@ -77,6 +92,11 @@ const ProfilePage = () => {
       }
 
       await updateProfile(currentUser, { displayName: data.displayName });
+      const userRef = doc(firedb, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        nickname: currentUser.displayName,
+        photoURL: avatarUrl,
+      });
       toast.success("Profile updated successfully");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -106,36 +126,53 @@ const ProfilePage = () => {
       }).catch((error) => {
         console.error("There was a problem while updating your profile.\n" + error);
       });
+      const userRef = doc(firedb, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        photoURL: downloadURL,
+      });
     } catch (error) {
       console.error("Error uploading file:", error);
     }
   };
 
   return (
-    <form className="d-flex flex-column align-items-center gap-2" onSubmit={handleSubmit(onSubmit)}>
-      <Image src={avatarUrl} id="userAvatar" roundedCircle onClick={handleImageClick} />
-      <input id="fileInput" type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/gif,image/jpeg,image/png,image/webp" />
+    <>
+      <h2>Profile</h2>
+      <form className="d-flex flex-column align-items-center gap-2" onSubmit={handleSubmit(onSubmit)}>
+        <Image src={avatarUrl} id="userAvatar" roundedCircle onClick={handleImageClick} />
+        <input id="fileInput" type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/gif,image/jpeg,image/png,image/webp" />
 
-      <input {...register("displayName")} type="text" placeholder="Nickname" />
-      {errors.displayName && <div className="">{errors.displayName.message}</div>}
+        <input {...register("displayName")} type="text" placeholder="Nickname" />
+        {errors.displayName && <div className="">{errors.displayName.message}</div>}
 
-      <input {...register("email")} type="text" placeholder="Email" />
-      {errors.email && <div className="">{errors.email.message}</div>}
+        <input {...register("email")} type="text" placeholder="Email" />
+        {errors.email && <div className="">{errors.email.message}</div>}
 
-      <input {...register("currentPassword")} type="password" placeholder="Current password" />
-      {errors.currentPassword && <div className="">{errors.currentPassword.message}</div>}
+        <input {...register("currentPassword")} type="password" placeholder="Current password" />
+        {errors.currentPassword && <div className="">{errors.currentPassword.message}</div>}
 
-      <input {...register("newPassword")} type="password" placeholder="New password" className="mt-3" />
-      {errors.newPassword && <div className="">{errors.newPassword.message}</div>}
+        <input {...register("newPassword")} type="password" placeholder="New password" className="mt-3" />
+        {errors.newPassword && <div className="">{errors.newPassword.message}</div>}
 
-      <input {...register("confirmNewPassword")} type="password" placeholder="Confirm new password" className="mb-3" />
-      {errors.confirmNewPassword && <div className="">{errors.confirmNewPassword.message}</div>}
+        <input {...register("confirmNewPassword")} type="password" placeholder="Confirm new password" className="mb-3" />
+        {errors.confirmNewPassword && <div className="">{errors.confirmNewPassword.message}</div>}
 
-      <Button className="btn btn-primary" disabled={isSubmitting} id="profilePageButton" type="submit">
-        {isSubmitting ? "Updating..." : "Update Profile"}
-      </Button>
-      {errors.root && <div>{errors.root.message}</div>}
-    </form>
+        <Button className="btn btn-primary" disabled={isSubmitting} id="profilePageButton" type="submit">
+          {isSubmitting ? "Updating..." : "Update Profile"}
+        </Button>
+        {errors.root && <div>{errors.root.message}</div>}
+      </form>
+      <div className="user-list mt-4">
+        <h2>All Users</h2>
+        <div className="d-flex flex-wrap justify-content-center">
+          {users.map(user => (
+            <div key={user.id} className="user-card m-2 text-center">
+              <Image src={user.photoURL} roundedCircle  className="avatar"/><span>{user.nickname}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
   );
 };
 
