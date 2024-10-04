@@ -16,6 +16,7 @@ export interface Restaurant {
   email?: string;
   facebook?: string;
   instagram?: string;
+  images?: string[];
   name: string;
   offer: string[];
   phone?: string;

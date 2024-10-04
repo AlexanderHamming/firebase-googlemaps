@@ -20,7 +20,7 @@ const RestaurantList: React.FC<RestaurantListProps> = ({ restaurants, loading, e
       <div className="restaurant-list">
         {restaurants.map(({ id, data: restaurant }) => (
           <div key={id} className="restaurant-item">
-            <RestaurantCard id={id} restaurant={restaurant} />  
+            <RestaurantCard restaurant={restaurant} />  
           </div>
         ))}
       </div>
