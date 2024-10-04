@@ -17,8 +17,8 @@ const ApprovedRestaurantsPage: React.FC = () => {
       const restaurants = approvedRestaurants.docs.map((doc) => {
         const data = doc.data();
         return {
-          id: doc.id,
           ...data,
+          id: doc.id,
           category: data.category || [],
           offer: data.offer || [],
         } as RestaurantWithId;
