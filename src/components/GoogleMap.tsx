@@ -5,6 +5,8 @@ import {
   InfoWindow,
 } from "@vis.gl/react-google-maps";
 import { useState, useEffect } from "react";
+import placeholderImage from "../assets/imgs/restaurantPlaceholder.jpeg";
+
 
 interface GoogleMappProps {
   coordinates: { lat: number; lng: number } | null;
@@ -49,6 +51,15 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const mapID = import.meta.env.VITE_GOOGLE_MAP_ID;
 
+  const selectedRestaurantData = restaurants?.find(
+    (r) => r.id === selectedRestaurant
+  )?.data;
+
+   const imageUrl =
+    selectedRestaurantData?.images && selectedRestaurantData.images.length > 0
+      ? selectedRestaurantData.images[0]
+      : placeholderImage;
+
   return (
     <APIProvider apiKey={apiKey}>
       <Map
@@ -90,67 +101,20 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
           <p>No restaurants available.</p>
         )}
 
-        {selectedRestaurant && (
-          <InfoWindow
-            position={
-              restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                .location
-            }
+{selectedRestaurant && selectedRestaurantData && (
+            <InfoWindow
+            position={selectedRestaurantData.location}
             onCloseClick={() => setSelectedRestaurant(null)}
           >
-            <div>
-              <h2>
-                {
-                  restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                    .name
-                }
-              </h2>
-              <h3>
-                {
-                  restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                    .description
-                }
-              </h3>
-              <p>
-                Address:{" "}
-                {
-                  restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                    .address
-                }
-              </p>
-              <p>
-                Category:{" "}
-                {restaurants
-                  ?.find((r) => r.id === selectedRestaurant)
-                  ?.data.category?.join(", ")}
-              </p>
-              <p>
-                offer:{" "}
-                {restaurants
-                  ?.find((r) => r.id === selectedRestaurant)
-                  ?.data.offer?.join(", ")}
-              </p>
-              <p>
-                website:{" "}
-                {
-                  restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                    .website
-                }
-              </p>
-              <p>
-                email:{" "}
-                {
-                  restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                    .email
-                }
-              </p>
-              <p>
-                phone:{" "}
-                {
-                  restaurants?.find((r) => r.id === selectedRestaurant)?.data
-                    .phone
-                }
-              </p>
+            <div style={{ maxWidth: "200px" }}>
+              <h2>{selectedRestaurantData.name}</h2>
+              <h3>{selectedRestaurantData.description}</h3>
+              <p>Address: {selectedRestaurantData.address}</p>
+              <p>Category: {selectedRestaurantData.category?.join(", ")}</p>
+              <p>Offer: {selectedRestaurantData.offer?.join(", ")}</p>
+              <p>Website: {selectedRestaurantData.website}</p>
+              <p>Email: {selectedRestaurantData.email}</p>
+              <p>Phone: {selectedRestaurantData.phone}</p>
               <p>
                 <a
                   href={directionsLink}
@@ -160,6 +124,11 @@ const GoogleMapp: React.FC<GoogleMappProps> = ({
                   Get Directions
                 </a>
               </p>
+              <img
+                src={imageUrl}
+                alt={`${selectedRestaurantData.name} Image`}
+                style={{ width: "100%", height: "auto", marginTop: "10px" }}
+              />
             </div>
           </InfoWindow>
         )}
